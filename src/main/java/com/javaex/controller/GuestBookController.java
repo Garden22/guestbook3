@@ -2,6 +2,7 @@ package com.javaex.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,16 +16,19 @@ import com.javaex.vo.GuestBookVo;
 @Controller
 public class GuestBookController {
 	
+	@Autowired
+	private GuestBookDao gbDao;
+
+	
 	@RequestMapping(value="/list", method={RequestMethod.GET, RequestMethod.POST})
 	public String list(Model model) {
 		System.out.println("controller>list");
 		
-		GuestBookDao gbDao = new GuestBookDao();
 		List<GuestBookVo> gbList = gbDao.showList();
 		
 		model.addAttribute("gbList", gbList);
 		
-		return "/WEB-INF/views/addList.jsp";
+		return "addList";
 	}
 	
 	
@@ -32,7 +36,6 @@ public class GuestBookController {
 	public String add(@ModelAttribute GuestBookVo gbVo) {
 		System.out.println("controller>add");
 		
-		GuestBookDao gbDao = new GuestBookDao();
 		gbDao.add(gbVo);
 		
 		return "redirect:/list";
@@ -44,7 +47,7 @@ public class GuestBookController {
 		System.out.println("controller>deleteform");
 		
 		model.addAttribute("no", no);		
-		return "/WEB-INF/views/deleteForm.jsp";
+		return "deleteForm";
 	}
 	
 	
@@ -52,7 +55,6 @@ public class GuestBookController {
 	public String delete(@ModelAttribute GuestBookVo gbVo) {
 		System.out.println("controller>delete");
 		
-		GuestBookDao gbDao = new GuestBookDao();
 		int no = gbDao.find(gbVo);
 		if (no != -1) gbDao.delete(gbVo.no);
 				
